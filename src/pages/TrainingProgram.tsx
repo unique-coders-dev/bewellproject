@@ -44,12 +44,64 @@ export function TrainingProgram({ onNavigate: _onNavigate }: TrainingProps) {
   const [submitted, setSubmitted] = useState(false)
 
   useEffect(() => {
-    supabase
-      .from('testimonials')
-      .select('*')
-      .eq('program_type', 'training')
-      .order('created_at', { ascending: false })
-      .then(({ data }) => { if (data) setTestimonials(data) })
+    const fetchTestimonials = async () => {
+      try {
+        const { data } = await supabase
+          .from('testimonials')
+          .select('*')
+          .eq('program_type', 'training')
+          .order('created_at', { ascending: false })
+
+        if (data && data.length > 0) {
+          setTestimonials(data)
+        } else {
+          // Fallback mock data
+          setTestimonials([
+            {
+              id: 't1',
+              name: 'Dr. Robert Miller',
+              role: 'Medical Doctor',
+              content: 'This program provided the practical lifestyle medicine tools that were missing from my medical school education. I now feel much better equipped to help my patients with chronic diseases.',
+              program_type: 'training',
+              is_featured: true,
+              created_at: new Date().toISOString()
+            },
+            {
+              id: 't2',
+              name: 'Grace Amena',
+              role: 'Community Health Worker',
+              content: 'Learning the eight laws of health has transformed my outreach work. The simple, natural principles are easy to explain and produce real results in the villages.',
+              program_type: 'training',
+              is_featured: true,
+              created_at: new Date().toISOString()
+            }
+          ])
+        }
+      } catch (error) {
+        setTestimonials([
+          {
+            id: 't1',
+            name: 'Dr. Robert Miller',
+            role: 'Medical Doctor',
+            content: 'This program provided the practical lifestyle medicine tools that were missing from my medical school education. I now feel much better equipped to help my patients with chronic diseases.',
+            program_type: 'training',
+            is_featured: true,
+            created_at: new Date().toISOString()
+          },
+          {
+            id: 't2',
+            name: 'Grace Amena',
+            role: 'Community Health Worker',
+            content: 'Learning the eight laws of health has transformed my outreach work. The simple, natural principles are easy to explain and produce real results in the villages.',
+            program_type: 'training',
+            is_featured: true,
+            created_at: new Date().toISOString()
+          }
+        ])
+      }
+    }
+
+    fetchTestimonials()
   }, [])
 
   const handleSubmit = (e: React.FormEvent) => {

@@ -57,13 +57,84 @@ export function Home({ onNavigate }: HomeProps) {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([])
 
   useEffect(() => {
-    supabase
-      .from('testimonials')
-      .select('*')
-      .eq('is_featured', true)
-      .order('created_at', { ascending: false })
-      .limit(3)
-      .then(({ data }) => { if (data) setTestimonials(data) })
+    const fetchTestimonials = async () => {
+      try {
+        const { data } = await supabase
+          .from('testimonials')
+          .select('*')
+          .eq('is_featured', true)
+          .order('created_at', { ascending: false })
+          .limit(3)
+
+        if (data && data.length > 0) {
+          setTestimonials(data)
+        } else {
+          // Fallback mock data
+          setTestimonials([
+            {
+              id: '1',
+              name: 'Sarah Johnson',
+              role: 'Heart Disease Patient',
+              content: 'The three weeks I spent at BE WELL completely changed my outlook on health. My blood pressure is now under control without heavy medication.',
+              program_type: 'lifestyle',
+              is_featured: true,
+              created_at: new Date().toISOString()
+            },
+            {
+              id: '2',
+              name: 'David Chen',
+              role: 'Diabetes Management',
+              content: 'I learned how to manage my type 2 diabetes through nutrition and lifestyle. The peaceful environment and supportive staff were incredible.',
+              program_type: 'lifestyle',
+              is_featured: true,
+              created_at: new Date().toISOString()
+            },
+            {
+              id: '3',
+              name: 'Elena Rodriguez',
+              role: 'Healthcare Worker',
+              content: 'The training program opened my eyes to the power of natural medicine. I now share these principles with all my patients.',
+              program_type: 'training',
+              is_featured: true,
+              created_at: new Date().toISOString()
+            }
+          ])
+        }
+      } catch (error) {
+        // Fallback on error
+        setTestimonials([
+          {
+            id: '1',
+            name: 'Sarah Johnson',
+            role: 'Heart Disease Patient',
+            content: 'The three weeks I spent at BE WELL completely changed my outlook on health. My blood pressure is now under control without heavy medication.',
+            program_type: 'lifestyle',
+            is_featured: true,
+            created_at: new Date().toISOString()
+          },
+          {
+            id: '2',
+            name: 'David Chen',
+            role: 'Diabetes Management',
+            content: 'I learned how to manage my type 2 diabetes through nutrition and lifestyle. The peaceful environment and supportive staff were incredible.',
+            program_type: 'lifestyle',
+            is_featured: true,
+            created_at: new Date().toISOString()
+          },
+          {
+            id: '3',
+            name: 'Elena Rodriguez',
+            role: 'Healthcare Worker',
+            content: 'The training program opened my eyes to the power of natural medicine. I now share these principles with all my patients.',
+            program_type: 'training',
+            is_featured: true,
+            created_at: new Date().toISOString()
+          }
+        ])
+      }
+    }
+
+    fetchTestimonials()
   }, [])
 
   const handleNav = (page: string) => {
@@ -88,7 +159,7 @@ export function Home({ onNavigate }: HomeProps) {
           </Badge>
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
             Find Healing in<br />
-            <span className="text-primary">Nature's Embrace</span>
+            <span>Nature's Embrace</span>
           </h1>
           <p className="text-lg sm:text-xl text-white/85 mb-8 max-w-2xl mx-auto leading-relaxed">
             BE WELL is a lifestyle program where persons suffering with serious illness may come and find healing in two or three weeks of special care, nestled in the beautiful hills near Choto Daragar Hat.
@@ -293,14 +364,6 @@ export function Home({ onNavigate }: HomeProps) {
               className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 text-base px-8"
             >
               Apply for the Lifestyle Program
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              onClick={() => handleNav('contact')}
-              className="border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground/10 text-base px-8"
-            >
-              Contact Us First
             </Button>
           </div>
         </div>

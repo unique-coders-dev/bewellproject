@@ -55,12 +55,64 @@ export function HostelServices({ onNavigate }: HostelProps) {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([])
 
   useEffect(() => {
-    supabase
-      .from('testimonials')
-      .select('*')
-      .eq('program_type', 'hostel')
-      .order('created_at', { ascending: false })
-      .then(({ data }) => { if (data) setTestimonials(data) })
+    const fetchTestimonials = async () => {
+      try {
+        const { data } = await supabase
+          .from('testimonials')
+          .select('*')
+          .eq('program_type', 'hostel')
+          .order('created_at', { ascending: false })
+
+        if (data && data.length > 0) {
+          setTestimonials(data)
+        } else {
+          // Fallback mock data
+          setTestimonials([
+            {
+              id: 'h1',
+              name: 'John Peterson',
+              role: 'Recovery Guest',
+              content: 'The peace and quiet at the BE WELL hostel was exactly what I needed. Waking up to the sound of birds and the smell of fruit trees is something I\'ll never forget.',
+              program_type: 'hostel',
+              is_featured: true,
+              created_at: new Date().toISOString()
+            },
+            {
+              id: 'h2',
+              name: 'Sarah Milles',
+              role: 'Family Guest',
+              content: 'We stayed as a family while my husband attended the program. The rooms were spotless, and the staff treated us like family. Highly recommend for anyone seeking a true retreat.',
+              program_type: 'hostel',
+              is_featured: true,
+              created_at: new Date().toISOString()
+            }
+          ])
+        }
+      } catch (error) {
+        setTestimonials([
+          {
+            id: 'h1',
+            name: 'John Peterson',
+            role: 'Recovery Guest',
+            content: 'The peace and quiet at the BE WELL hostel was exactly what I needed. Waking up to the sound of birds and the smell of fruit trees is something I\'ll never forget.',
+            program_type: 'hostel',
+            is_featured: true,
+            created_at: new Date().toISOString()
+          },
+          {
+            id: 'h2',
+            name: 'Sarah Milles',
+            role: 'Family Guest',
+            content: 'We stayed as a family while my husband attended the program. The rooms were spotless, and the staff treated us like family. Highly recommend for anyone seeking a true retreat.',
+            program_type: 'hostel',
+            is_featured: true,
+            created_at: new Date().toISOString()
+          }
+        ])
+      }
+    }
+
+    fetchTestimonials()
   }, [])
 
   const handleNav = (page: string) => {

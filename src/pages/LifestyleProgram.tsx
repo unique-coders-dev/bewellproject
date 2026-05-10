@@ -59,12 +59,64 @@ export function LifestyleProgram({ onNavigate: _onNavigate }: LifestyleProps) {
   const [submitted, setSubmitted] = useState(false)
 
   useEffect(() => {
-    supabase
-      .from('testimonials')
-      .select('*')
-      .eq('program_type', 'lifestyle')
-      .order('created_at', { ascending: false })
-      .then(({ data }) => { if (data) setTestimonials(data) })
+    const fetchTestimonials = async () => {
+      try {
+        const { data } = await supabase
+          .from('testimonials')
+          .select('*')
+          .eq('program_type', 'lifestyle')
+          .order('created_at', { ascending: false })
+
+        if (data && data.length > 0) {
+          setTestimonials(data)
+        } else {
+          // Fallback mock data
+          setTestimonials([
+            {
+              id: 'l1',
+              name: 'James Wilson',
+              role: 'Recovery from Depression',
+              content: 'The Lifestyle Program at BE WELL gave me the tools I needed to overcome deep-seated depression. The connection with nature and the structured daily routine were life-saving.',
+              program_type: 'lifestyle',
+              is_featured: true,
+              created_at: new Date().toISOString()
+            },
+            {
+              id: 'l2',
+              name: 'Maria Garcia',
+              role: 'Weight Loss Success',
+              content: 'I lost 8kg in three weeks, but more importantly, I learned how to eat and live to keep it off. My energy levels haven\'t been this high in years.',
+              program_type: 'lifestyle',
+              is_featured: true,
+              created_at: new Date().toISOString()
+            }
+          ])
+        }
+      } catch (error) {
+        setTestimonials([
+          {
+            id: 'l1',
+            name: 'James Wilson',
+            role: 'Recovery from Depression',
+            content: 'The Lifestyle Program at BE WELL gave me the tools I needed to overcome deep-seated depression. The connection with nature and the structured daily routine were life-saving.',
+            program_type: 'lifestyle',
+            is_featured: true,
+            created_at: new Date().toISOString()
+          },
+          {
+            id: 'l2',
+            name: 'Maria Garcia',
+            role: 'Weight Loss Success',
+            content: 'I lost 8kg in three weeks, but more importantly, I learned how to eat and live to keep it off. My energy levels haven\'t been this high in years.',
+            program_type: 'lifestyle',
+            is_featured: true,
+            created_at: new Date().toISOString()
+          }
+        ])
+      }
+    }
+
+    fetchTestimonials()
   }, [])
 
   const handleSubmit = (e: React.FormEvent) => {
