@@ -1,4 +1,4 @@
-import { Leaf, MapPin, Phone, Mail, Globe, CirclePlay as PlayCircle } from 'lucide-react'
+import { MapPin, Phone, Mail, Globe, CirclePlay as PlayCircle } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 
 interface FooterProps {

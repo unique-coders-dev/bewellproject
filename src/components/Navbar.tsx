@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Leaf, Menu, Phone } from 'lucide-react'
+import { Menu, Phone } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { cn } from '@/lib/utils'
@@ -27,6 +27,7 @@ export function Navbar({ currentPage, onNavigate }: NavbarProps) {
     const handleScroll = () => setScrolled(window.scrollY > 20)
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
+    console.log(scrolled)
   }, [])
 
   const handleNav = (page: string) => {
