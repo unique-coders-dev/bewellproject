@@ -149,10 +149,10 @@ export function Home({ onNavigate }: HomeProps) {
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1600&q=80&fit=crop')",
+            backgroundImage: "url('/images/buildings/IMG_3865.JPG')",
           }}
         />
-        <div className="absolute inset-0 bg-foreground/55" />
+        <div className="absolute inset-0 bg-foreground/75" />
         <div className="relative z-10 text-center px-4 sm:px-6 max-w-4xl mx-auto">
           <Badge className="mb-6 bg-primary/80 text-primary-foreground border-0 px-4 py-1.5 text-sm">
             Center of Health &amp; Healing
@@ -162,7 +162,7 @@ export function Home({ onNavigate }: HomeProps) {
             <span>Nature's Embrace</span>
           </h1>
           <p className="text-lg sm:text-xl text-white/85 mb-8 max-w-2xl mx-auto leading-relaxed">
-            BE WELL is a lifestyle program where persons suffering with serious illness may come and find healing in two or three weeks of special care, nestled in the beautiful hills near Choto Daragar Hat.
+            BE WELL is a center of health and healing. We operate a lifestyle program where persons suffering with heart disease, diabetes, cancer, high blood pressure, depression, and other lifestyle illnesses may come and find healing in two or three weeks of special care.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" onClick={() => handleNav('lifestyle')} className="text-base px-8">
@@ -209,11 +209,14 @@ export function Home({ onNavigate }: HomeProps) {
               <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-6 leading-tight">
                 Where Nature Meets<br />Modern Wellness
               </h2>
-              <p className="text-muted-foreground leading-relaxed mb-4">
-                Our campus is located in beautiful hills near Choto Daragar Hat. We have flowers and fruit trees growing in abundance, and are surrounded with nature on every side. This peaceful environment is itself part of the healing process.
+              <p className="text-muted-foreground leading-relaxed mb-4 font-semibold">
+                Our campus is located in beautiful hills near Choto Daragar Hat. We have flowers and fruit trees growing in abundance, and are surrounded with nature on every side.
               </p>
-              <p className="text-muted-foreground leading-relaxed mb-6">
-                At BE WELL, we believe the body has a remarkable capacity to heal itself when given the right conditions. Our expert team guides each guest through a comprehensive lifestyle change program that addresses the root causes of chronic illness.
+              <p className="text-muted-foreground leading-relaxed mb-4 text-sm">
+                BE WELL ALWAYS LTD was founded and developed by Eugene and Heidi Prewitt. They worked previously at two of the world's premier wellness centers (Weimar Institute in Weimar California; Aenon Farm, in Malaysia.) And they have given lectures and spent time at several others including Our Home in Ukraine, TGM in Austria, Hergalia in Romania.
+              </p>
+              <p className="text-muted-foreground leading-relaxed mb-6 text-sm">
+                After watching hundreds of critical patients healed from heart disease and diabetes and cancer, they decided to bring a service like this to Bangladesh.
               </p>
               <Button onClick={() => handleNav('lifestyle')} variant="outline">
                 Learn About Our Program
@@ -222,7 +225,7 @@ export function Home({ onNavigate }: HomeProps) {
             </div>
             <div className="relative">
               <img
-                src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&q=80&fit=crop"
+                src="/images/buildings/IMG_3877.JPG"
                 alt="Beautiful green hillside at BeWell campus"
                 className="rounded-xl shadow-lg w-full object-cover aspect-[4/3]"
               />
@@ -309,11 +312,11 @@ export function Home({ onNavigate }: HomeProps) {
       <section className="py-0">
         <div className="relative h-72 sm:h-96 overflow-hidden">
           <img
-            src="https://images.unsplash.com/photo-1502082553048-f009c37129b9?w=1600&q=80&fit=crop"
+            src="/images/scenery/IMG_3983.JPG"
             alt="Lush green nature surrounding BeWell campus"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-foreground/40 flex items-center justify-center">
+          <div className="absolute inset-0 bg-foreground/65 flex items-center justify-center">
             <div className="text-center text-white px-4">
               <h2 className="text-2xl sm:text-3xl font-bold mb-2">Surrounded by Nature's Beauty</h2>
               <p className="text-white/80 max-w-xl">

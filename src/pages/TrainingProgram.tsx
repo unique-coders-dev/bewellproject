@@ -32,10 +32,10 @@ const outcomes = [
 ]
 
 const photos = [
-  'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&q=80&fit=crop',
-  'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&q=80&fit=crop',
-  'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&q=80&fit=crop',
-  'https://images.unsplash.com/photo-1551434678-e076c223a692?w=600&q=80&fit=crop',
+  '/images/exercise/IMG_4011.JPG',
+  '/images/exercise/IMG_4013.JPG',
+  '/images/exercise/IMG_4018.JPG',
+  '/images/classes/IMG_4031.JPG',
 ]
 
 export function TrainingProgram({ onNavigate: _onNavigate }: TrainingProps) {
@@ -115,9 +115,9 @@ export function TrainingProgram({ onNavigate: _onNavigate }: TrainingProps) {
       <section className="relative pt-16 min-h-[55vh] flex items-center">
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=1400&q=80&fit=crop')" }}
+          style={{ backgroundImage: "url('/images/buildings/IMG_3865.JPG')" }}
         />
-        <div className="absolute inset-0 bg-foreground/60" />
+        <div className="absolute inset-0 bg-foreground/75" />
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <Badge className="mb-4 bg-primary/80 text-primary-foreground border-0">Training Program</Badge>
           <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4 max-w-2xl leading-tight">
@@ -209,7 +209,7 @@ export function TrainingProgram({ onNavigate: _onNavigate }: TrainingProps) {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
               <img
-                src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80&fit=crop"
+                src="/images/classes/IMG_4034.JPG"
                 alt="Participants learning at BeWell training"
                 className="rounded-xl shadow-lg w-full object-cover aspect-[4/3]"
               />

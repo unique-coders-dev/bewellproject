@@ -43,9 +43,9 @@ export function WorkAtBeWell({ onNavigate: _onNavigate }: WorkProps) {
       <section className="relative pt-16 min-h-[55vh] flex items-center">
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=1400&q=80&fit=crop')" }}
+          style={{ backgroundImage: "url('/images/buildings/IMG_3865.JPG')" }}
         />
-        <div className="absolute inset-0 bg-foreground/60" />
+        <div className="absolute inset-0 bg-foreground/75" />
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <Badge className="mb-4 bg-primary/80 text-primary-foreground border-0">Join Our Team</Badge>
           <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4 max-w-2xl leading-tight">
@@ -77,7 +77,7 @@ export function WorkAtBeWell({ onNavigate: _onNavigate }: WorkProps) {
             </div>
             <div>
               <img
-                src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&q=80&fit=crop"
+                src="/images/buildings/IMG_3865.JPG"
                 alt="Team working together at BeWell"
                 className="rounded-xl shadow-lg w-full object-cover aspect-[4/3]"
               />

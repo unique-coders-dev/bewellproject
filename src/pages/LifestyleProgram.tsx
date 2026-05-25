@@ -131,9 +131,9 @@ export function LifestyleProgram({ onNavigate: _onNavigate }: LifestyleProps) {
       <section className="relative pt-16 min-h-[60vh] flex items-center">
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=1400&q=80&fit=crop')" }}
+          style={{ backgroundImage: "url('/images/scenery/IMG_3880.JPG')" }}
         />
-        <div className="absolute inset-0 bg-foreground/55" />
+        <div className="absolute inset-0 bg-foreground/75" />
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <Badge className="mb-4 bg-primary/80 text-primary-foreground border-0">Lifestyle Program</Badge>
           <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4 max-w-2xl leading-tight">
@@ -181,7 +181,7 @@ export function LifestyleProgram({ onNavigate: _onNavigate }: LifestyleProps) {
             </div>
             <div>
               <img
-                src="https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=800&q=80&fit=crop"
+                src="/images/meeting/IMG_4172.JPG"
                 alt="Fresh healthy food at BeWell"
                 className="rounded-xl shadow-lg w-full object-cover aspect-[4/3]"
               />

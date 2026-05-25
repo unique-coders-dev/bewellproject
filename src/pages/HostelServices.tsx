@@ -25,30 +25,30 @@ const roomTypes = [
   {
     title: 'Single Room',
     description: 'A peaceful private room with garden view, ideal for individuals attending our programs.',
-    image: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600&q=80&fit=crop',
+    image: '/images/buildings/IMG_3865.JPG',
     features: ['Private room', 'Single bed', 'Natural light', 'Clean bathroom'],
   },
   {
     title: 'Double Room',
     description: 'Perfect for couples or two guests attending together. Shared spaces for relaxation.',
-    image: 'https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=600&q=80&fit=crop',
+    image: '/images/buildings/IMG_3877.JPG',
     features: ['Private room', 'Two beds', 'Natural light', 'Clean bathroom'],
   },
   {
     title: 'Family Room',
     description: 'Spacious accommodation for families with children attending the program together.',
-    image: 'https://images.unsplash.com/photo-1560185007-c5ca9d2c014d?w=600&q=80&fit=crop',
+    image: '/images/buildings/IMG_3865.JPG',
     features: ['Larger room', 'Multiple beds', 'Family friendly', 'Extra space'],
   },
 ]
 
 const galleryImages = [
-  { src: 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=600&q=80&fit=crop', alt: 'Hostel garden view' },
-  { src: 'https://images.unsplash.com/photo-1586798271654-0471bb1b0517?w=600&q=80&fit=crop', alt: 'Peaceful surroundings' },
-  { src: 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=600&q=80&fit=crop', alt: 'Nature trails' },
-  { src: 'https://images.unsplash.com/photo-1490750967868-88df5691cc53?w=600&q=80&fit=crop', alt: 'Flowers on campus' },
-  { src: 'https://images.unsplash.com/photo-1444392061186-9fc38f16d8d4?w=600&q=80&fit=crop', alt: 'Fruit trees' },
-  { src: 'https://images.unsplash.com/photo-1437719417032-8595fd9e9dc6?w=600&q=80&fit=crop', alt: 'Sunrise view from campus' },
+  { src: '/images/scenery/IMG_3880.JPG', alt: 'Hostel garden view' },
+  { src: '/images/scenery/IMG_3882.JPG', alt: 'Peaceful surroundings at BE WELL' },
+  { src: '/images/scenery/IMG_3949.JPG', alt: 'Nature trails on campus' },
+  { src: '/images/scenery/IMG_3984.JPG', alt: 'Beautiful surroundings' },
+  { src: '/images/garden/IMG_3895.JPG', alt: 'Fruit trees on campus' },
+  { src: '/images/scenery/IMG_4022.JPG', alt: 'Scenic view from campus' },
 ]
 
 export function HostelServices({ onNavigate }: HostelProps) {
@@ -126,9 +126,9 @@ export function HostelServices({ onNavigate }: HostelProps) {
       <section className="relative pt-16 min-h-[55vh] flex items-center">
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1400&q=80&fit=crop')" }}
+          style={{ backgroundImage: "url('/images/scenery/IMG_3989.JPG')" }}
         />
-        <div className="absolute inset-0 bg-foreground/55" />
+        <div className="absolute inset-0 bg-foreground/75" />
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <Badge className="mb-4 bg-primary/80 text-primary-foreground border-0">Hostel Services</Badge>
           <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4 max-w-2xl leading-tight">
