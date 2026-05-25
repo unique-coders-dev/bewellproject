@@ -1,11 +1,7 @@
-import { useEffect, useState } from 'react'
 import { Leaf, Phone, Check } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { supabase, type FarmProduct } from '@/lib/supabase'
-
 interface FarmProps {
   onNavigate: (page: string) => void
 }
@@ -26,132 +22,7 @@ const farmImages = [
   { src: '/images/garden/IMG_3914.JPG', alt: 'Garden herbs growing at BE WELL' },
 ]
 
-const categories = ['all', 'fruits', 'vegetables', 'herbs']
-
 export function Farm({ onNavigate }: FarmProps) {
-  const [products, setProducts] = useState<FarmProduct[]>([])
-  const [activeCategory, setActiveCategory] = useState('all')
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      setLoading(true)
-      try {
-        const { data } = await supabase
-          .from('farm_products')
-          .select('*')
-          .order('category')
-
-        if (data && data.length > 0) {
-          setProducts(data)
-        } else {
-          // Fallback mock data
-          setProducts([
-            {
-              id: '1',
-              name: 'Organic Papaya',
-              description: 'Sweet, vine-ripened papayas from our hillside trees.',
-              category: 'fruits',
-              price: '80 BDT',
-              unit: 'kg',
-              is_available: true,
-              image_url: '',
-              created_at: new Date().toISOString()
-            },
-            {
-              id: '2',
-              name: 'Wild Forest Honey',
-              description: 'Pure, unprocessed honey collected from the surrounding hills.',
-              category: 'other',
-              price: '1200 BDT',
-              unit: 'kg',
-              is_available: true,
-              image_url: '',
-              created_at: new Date().toISOString()
-            },
-            {
-              id: '3',
-              name: 'Fresh Spinach',
-              description: 'Crispy, nutrient-dense greens grown in organic soil.',
-              category: 'vegetables',
-              price: '40 BDT',
-              unit: 'bunch',
-              is_available: true,
-              image_url: '',
-              created_at: new Date().toISOString()
-            },
-            {
-              id: '4',
-              name: 'Medicinal Turmeric',
-              description: 'Fresh root with high curcumin content, grown on-site.',
-              category: 'herbs',
-              price: '150 BDT',
-              unit: 'kg',
-              is_available: true,
-              image_url: '',
-              created_at: new Date().toISOString()
-            },
-            {
-              id: '5',
-              name: 'Hill Bananas',
-              description: 'Small, sweet local variety grown in our fruit gardens.',
-              category: 'fruits',
-              price: '60 BDT',
-              unit: 'dozen',
-              is_available: true,
-              image_url: '',
-              created_at: new Date().toISOString()
-            }
-          ])
-        }
-      } catch (error) {
-        // Fallback on error
-        setProducts([
-          {
-            id: '1',
-            name: 'Organic Papaya',
-            description: 'Sweet, vine-ripened papayas from our hillside trees.',
-            category: 'fruits',
-            price: '80 BDT',
-            unit: 'kg',
-            is_available: true,
-            image_url: '',
-            created_at: new Date().toISOString()
-          },
-          {
-            id: '2',
-            name: 'Wild Forest Honey',
-            description: 'Pure, unprocessed honey collected from the surrounding hills.',
-            category: 'other',
-            price: '1200 BDT',
-            unit: 'kg',
-            is_available: true,
-            image_url: '',
-            created_at: new Date().toISOString()
-          },
-          {
-            id: '3',
-            name: 'Fresh Spinach',
-            description: 'Crispy, nutrient-dense greens grown in organic soil.',
-            category: 'vegetables',
-            price: '40 BDT',
-            unit: 'bunch',
-            is_available: true,
-            image_url: '',
-            created_at: new Date().toISOString()
-          }
-        ])
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchProducts()
-  }, [])
-
-  const filtered = activeCategory === 'all'
-    ? products
-    : products.filter((p) => p.category === activeCategory)
 
   const handleNav = (page: string) => {
     onNavigate(page)
