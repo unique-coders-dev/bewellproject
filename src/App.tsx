@@ -8,8 +8,9 @@ import { HostelServices } from '@/pages/HostelServices'
 import { Farm } from '@/pages/Farm'
 import { WorkAtBeWell } from '@/pages/WorkAtBeWell'
 import { Contact } from '@/pages/Contact'
+import { Admin } from '@/pages/Admin'
 
-type Page = 'home' | 'lifestyle' | 'training' | 'hostel' | 'farm' | 'work' | 'contact'
+type Page = 'home' | 'lifestyle' | 'training' | 'hostel' | 'farm' | 'work' | 'contact' | 'admin'
 
 const pageTitles: Record<Page, string> = {
   home: 'BE WELL - Center of Health & Healing',
@@ -19,9 +20,10 @@ const pageTitles: Record<Page, string> = {
   farm: 'BE WELL Farm - Fresh Organic Produce',
   work: 'Work With Us - BE WELL ALWAYS LTD',
   contact: 'Contact Us - BE WELL',
+  admin: 'Staff - BE WELL',
 }
 
-const validPages: Page[] = ['home', 'lifestyle', 'training', 'hostel', 'farm', 'work', 'contact']
+const validPages: Page[] = ['home', 'lifestyle', 'training', 'hostel', 'farm', 'work', 'contact', 'admin']
 
 function getInitialPage(): Page {
   const hash = window.location.hash.slice(1) as Page
@@ -60,6 +62,12 @@ export function App() {
       case 'contact': return <Contact onNavigate={navigate} />
       default: return <Home onNavigate={navigate} />
     }
+  }
+
+  // The staff area is deliberately outside the public chrome: no navbar, no
+  // footer, and no link to it anywhere on the marketing site.
+  if (currentPage === 'admin') {
+    return <Admin />
   }
 
   return (
