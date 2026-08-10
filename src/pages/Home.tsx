@@ -58,80 +58,20 @@ export function Home({ onNavigate }: HomeProps) {
 
   useEffect(() => {
     const fetchTestimonials = async () => {
-      try {
-        const { data } = await supabase
-          .from('testimonials')
-          .select('*')
-          .eq('is_featured', true)
-          .order('created_at', { ascending: false })
-          .limit(3)
+      const { data, error } = await supabase
+        .from('testimonials')
+        .select('*')
+        .eq('is_featured', true)
+        .order('created_at', { ascending: false })
+        .limit(3)
 
-        if (data && data.length > 0) {
-          setTestimonials(data)
-        } else {
-          // Fallback mock data
-          setTestimonials([
-            {
-              id: '1',
-              name: 'Sarah Johnson',
-              role: 'Heart Disease Patient',
-              content: 'The three weeks I spent at BE WELL completely changed my outlook on health. My blood pressure is now under control without heavy medication.',
-              program_type: 'lifestyle',
-              is_featured: true,
-              created_at: new Date().toISOString()
-            },
-            {
-              id: '2',
-              name: 'David Chen',
-              role: 'Diabetes Management',
-              content: 'I learned how to manage my type 2 diabetes through nutrition and lifestyle. The peaceful environment and supportive staff were incredible.',
-              program_type: 'lifestyle',
-              is_featured: true,
-              created_at: new Date().toISOString()
-            },
-            {
-              id: '3',
-              name: 'Elena Rodriguez',
-              role: 'Healthcare Worker',
-              content: 'The training program opened my eyes to the power of natural medicine. I now share these principles with all my patients.',
-              program_type: 'training',
-              is_featured: true,
-              created_at: new Date().toISOString()
-            }
-          ])
-        }
-      } catch (error) {
-        // Fallback on error
-        setTestimonials([
-          {
-            id: '1',
-            name: 'Sarah Johnson',
-            role: 'Heart Disease Patient',
-            content: 'The three weeks I spent at BE WELL completely changed my outlook on health. My blood pressure is now under control without heavy medication.',
-            program_type: 'lifestyle',
-            is_featured: true,
-            created_at: new Date().toISOString()
-          },
-          {
-            id: '2',
-            name: 'David Chen',
-            role: 'Diabetes Management',
-            content: 'I learned how to manage my type 2 diabetes through nutrition and lifestyle. The peaceful environment and supportive staff were incredible.',
-            program_type: 'lifestyle',
-            is_featured: true,
-            created_at: new Date().toISOString()
-          },
-          {
-            id: '3',
-            name: 'Elena Rodriguez',
-            role: 'Healthcare Worker',
-            content: 'The training program opened my eyes to the power of natural medicine. I now share these principles with all my patients.',
-            program_type: 'training',
-            is_featured: true,
-            created_at: new Date().toISOString()
-          }
-        ])
+      if (error) {
+        console.error('Failed to load testimonials', error)
       }
+
+      // Only real testimonials from the database are ever shown; the
+      // section is hidden entirely when there are none.
+      setTestimonials(data ?? [])
     }
 
     fetchTestimonials()

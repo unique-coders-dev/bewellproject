@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { supabase, isSupabaseConfigured } from '@/lib/supabase'
 
 interface WorkProps {
   onNavigate: (page: string) => void
@@ -31,10 +32,39 @@ const values = [
 export function WorkAtBeWell({ onNavigate: _onNavigate }: WorkProps) {
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', position: '', experience: '', motivation: '' })
   const [submitted, setSubmitted] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState('')
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    if (!isSupabaseConfigured) {
+      setError('We cannot receive applications online right now. Please email us your details instead.')
+      return
+    }
+
+    setSubmitting(true)
+    setError('')
+
+    const { error: insertError } = await supabase.from('job_applications').insert({
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      position: formData.position,
+      experience: formData.experience,
+      motivation: formData.motivation,
+    })
+
+    setSubmitting(false)
+
+    if (insertError) {
+      console.error('Failed to save job application', insertError)
+      setError('Something went wrong sending your application. Please try again, or email us directly.')
+      return
+    }
+
     setSubmitted(true)
+    setFormData({ name: '', email: '', phone: '', position: '', experience: '', motivation: '' })
   }
 
   return (
@@ -215,8 +245,11 @@ export function WorkAtBeWell({ onNavigate: _onNavigate }: WorkProps) {
                     <Label htmlFor="w-motivation">Why do you want to work at BE WELL?</Label>
                     <Textarea id="w-motivation" rows={3} value={formData.motivation} onChange={(e) => setFormData({ ...formData, motivation: e.target.value })} placeholder="Share your motivation and how you align with our mission..." />
                   </div>
-                  <Button type="submit" className="w-full" size="lg">
-                    Submit Application
+                  {error && (
+                    <p className="text-sm text-destructive" role="alert">{error}</p>
+                  )}
+                  <Button type="submit" className="w-full" size="lg" disabled={submitting}>
+                    {submitting ? 'Sending...' : 'Submit Application'}
                     <ArrowRight className="ml-2 w-4 h-4" />
                   </Button>
                 </form>
