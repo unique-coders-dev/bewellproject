@@ -62,7 +62,10 @@ jobs:
           protocol: ftps
           port: 21
           local-dir: ./dist/
-          server-dir: ./public_html/
+          # The FTP account u174852759.canvassing.org is already chrooted to the
+          # domain's public_html, so this must stay "./" — "./public_html/" makes
+          # a nested public_html/public_html/ that the web server never serves.
+          server-dir: ./
           dangerous-clean-slate: false
           exclude: |
             **/.git*
