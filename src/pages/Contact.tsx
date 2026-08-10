@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { supabase } from '@/lib/supabase'
+import { supabase, isSupabaseConfigured } from '@/lib/supabase'
 
 interface ContactProps {
   onNavigate: (page: string) => void
@@ -67,6 +67,11 @@ export function Contact({ onNavigate: _onNavigate }: ContactProps) {
 
     if (!formData.name || !formData.email || !formData.subject || !formData.message) {
       setError('Please fill in all required fields.')
+      return
+    }
+
+    if (!isSupabaseConfigured) {
+      setError('We cannot receive messages online right now. Please call or email us directly.')
       return
     }
 

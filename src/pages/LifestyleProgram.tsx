@@ -8,7 +8,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { TestimonialCard } from '@/components/TestimonialCard'
-import { supabase, type Testimonial } from '@/lib/supabase'
+import { supabase, isSupabaseConfigured, type Testimonial } from '@/lib/supabase'
 
 interface LifestyleProps {
   onNavigate?: (page: string) => void
@@ -57,70 +57,57 @@ export function LifestyleProgram({ onNavigate: _onNavigate }: LifestyleProps) {
     name: '', email: '', phone: '', condition: '', program: '', message: ''
   })
   const [submitted, setSubmitted] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState('')
 
   useEffect(() => {
     const fetchTestimonials = async () => {
-      try {
-        const { data } = await supabase
-          .from('testimonials')
-          .select('*')
-          .eq('program_type', 'lifestyle')
-          .order('created_at', { ascending: false })
+      const { data, error } = await supabase
+        .from('testimonials')
+        .select('*')
+        .eq('program_type', 'lifestyle')
+        .order('created_at', { ascending: false })
 
-        if (data && data.length > 0) {
-          setTestimonials(data)
-        } else {
-          // Fallback mock data
-          setTestimonials([
-            {
-              id: 'l1',
-              name: 'James Wilson',
-              role: 'Recovery from Depression',
-              content: 'The Lifestyle Program at BE WELL gave me the tools I needed to overcome deep-seated depression. The connection with nature and the structured daily routine were life-saving.',
-              program_type: 'lifestyle',
-              is_featured: true,
-              created_at: new Date().toISOString()
-            },
-            {
-              id: 'l2',
-              name: 'Maria Garcia',
-              role: 'Weight Loss Success',
-              content: 'I lost 8kg in three weeks, but more importantly, I learned how to eat and live to keep it off. My energy levels haven\'t been this high in years.',
-              program_type: 'lifestyle',
-              is_featured: true,
-              created_at: new Date().toISOString()
-            }
-          ])
-        }
-      } catch (error) {
-        setTestimonials([
-          {
-            id: 'l1',
-            name: 'James Wilson',
-            role: 'Recovery from Depression',
-            content: 'The Lifestyle Program at BE WELL gave me the tools I needed to overcome deep-seated depression. The connection with nature and the structured daily routine were life-saving.',
-            program_type: 'lifestyle',
-            is_featured: true,
-            created_at: new Date().toISOString()
-          },
-          {
-            id: 'l2',
-            name: 'Maria Garcia',
-            role: 'Weight Loss Success',
-            content: 'I lost 8kg in three weeks, but more importantly, I learned how to eat and live to keep it off. My energy levels haven\'t been this high in years.',
-            program_type: 'lifestyle',
-            is_featured: true,
-            created_at: new Date().toISOString()
-          }
-        ])
+      if (error) {
+        console.error('Failed to load testimonials', error)
       }
+
+      // Only real testimonials from the database are ever shown; the
+      // section is hidden entirely when there are none.
+      setTestimonials(data ?? [])
     }
 
     fetchTestimonials()
   }, [])
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    if (!isSupabaseConfigured) {
+      setError('We cannot receive applications online right now. Please call or email us and we will take your details directly.')
+      return
+    }
+
+    setSubmitting(true)
+    setError('')
+
+    const { error: insertError } = await supabase.from('program_applications').insert({
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      condition: formData.condition,
+      program_length: formData.program,
+      message: formData.message,
+    })
+
+    setSubmitting(false)
+
+    if (insertError) {
+      console.error('Failed to save program application', insertError)
+      setError('Something went wrong sending your application. Please try again, or call us directly so we do not lose your details.')
+      return
+    }
+
     setSubmitted(true)
     setFormData({ name: '', email: '', phone: '', condition: '', program: '', message: '' })
   }
@@ -355,8 +342,11 @@ export function LifestyleProgram({ onNavigate: _onNavigate }: LifestyleProps) {
                       placeholder="Please share a brief description of your health situation and any questions you have..."
                     />
                   </div>
-                  <Button type="submit" className="w-full" size="lg">
-                    Submit Application
+                  {error && (
+                    <p className="text-sm text-destructive" role="alert">{error}</p>
+                  )}
+                  <Button type="submit" className="w-full" size="lg" disabled={submitting}>
+                    {submitting ? 'Sending...' : 'Submit Application'}
                     <ArrowRight className="ml-2 w-4 h-4" />
                   </Button>
                 </form>
