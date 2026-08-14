@@ -1,15 +1,15 @@
-name: Build and deploy the WordPress theme to staging
+name: Build and deploy the WordPress theme
 
-# Deliberately separate from deploy.yml, which still builds the React site and
-# ships it to canvassing.org. Until the cutover both are live at once:
+# Deploys the theme to canvassing.org, which now runs WordPress.
 #
-#   deploy.yml            -> canvassing.org            (React, production)
-#   deploy-wp-theme.yml   -> staging.canvassing.org    (WordPress, this one)
+# The React build and its deploy.yml were removed at cutover on 2026-08-15. Do
+# not reinstate a workflow that uploads dist/ to the document root: Hostinger
+# serves index.html before index.php, so a React index.html landing beside
+# WordPress's would silently revert the site with every check still green.
 #
-# They use different FTP credentials and touch different directories, so neither
-# can overwrite the other. At cutover, disable deploy.yml FIRST — see
-# wp-theme/DEPLOY.md — or the next push to main will drop a React index.html
-# into WordPress's document root.
+# FTP_STAGING_USERNAME / FTP_STAGING_PASSWORD now point at the live site. The
+# names are historical; renaming them means updating both the secrets and this
+# file in the same change, so they have been left alone.
 
 on:
   push:
@@ -105,11 +105,10 @@ jobs:
           protocol: ftps
           port: 21
           local-dir: ./wp-theme/bewell/
-          # The staging FTP account is chrooted to that site's public_html, the
-          # same way the production one is — so this path is relative to it, and
-          # must NOT be prefixed with public_html/. Getting this wrong produces
-          # a nested directory and a green run that changed nothing; see the
-          # note in deploy.yml about the same trap.
+          # The FTP account is chrooted to the site's public_html, so this path
+          # is relative to it and must NOT be prefixed with public_html/.
+          # Getting that wrong produces a nested public_html/public_html/ that
+          # the web server never serves, while the run still goes green.
           server-dir: ./wp-content/themes/bewell/
           dangerous-clean-slate: false
           exclude: |
@@ -121,9 +120,9 @@ jobs:
 
       - name: Summary
         run: |
-          echo "### WordPress theme deployed to staging" >> $GITHUB_STEP_SUMMARY
+          echo "### WordPress theme deployed to canvassing.org" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Target: \`wp-content/themes/bewell/\` on the staging site." >> $GITHUB_STEP_SUMMARY
+          echo "Target: \`wp-content/themes/bewell/\` on canvassing.org." >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "A green run means the files uploaded — it does not prove the site renders." >> $GITHUB_STEP_SUMMARY
-          echo "Open the staging URL and check the page actually looks styled." >> $GITHUB_STEP_SUMMARY
+          echo "Open canvassing.org and check the page actually looks styled." >> $GITHUB_STEP_SUMMARY

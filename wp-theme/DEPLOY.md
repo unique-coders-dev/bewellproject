@@ -1,5 +1,17 @@
 # BE WELL — WordPress migration
 
+> **Done. canvassing.org has been running WordPress since 2026-08-15.**
+>
+> The migration below is kept as the record of how it was done. What is still
+> worth reading: the cutover notes in §6 and the two gotchas at the end.
+>
+> One correction to what this document used to claim: *Connect domain* was not a
+> single click. hPanel refuses a domain that is still attached to another
+> website ("Domain connected to site", Next disabled), so the old
+> canvassing.org site entry had to be removed first — which takes its
+> `public_html` with it, React build and full image library included. The 21
+> photographs the theme actually uses were mirrored across beforehand.
+
 The site moves from a Vite + React SPA to WordPress so Eugene and the staff have
 real logins. The design is unchanged: `wp-theme/bewell/` is a hand-ported theme
 that reproduces the existing canvassing.org pixel for pixel.
