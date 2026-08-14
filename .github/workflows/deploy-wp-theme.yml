@@ -7,9 +7,10 @@ name: Build and deploy the WordPress theme
 # serves index.html before index.php, so a React index.html landing beside
 # WordPress's would silently revert the site with every check still green.
 #
-# FTP_STAGING_USERNAME / FTP_STAGING_PASSWORD now point at the live site. The
-# names are historical; renaming them means updating both the secrets and this
-# file in the same change, so they have been left alone.
+# Credentials: FTP_STAGING_USERNAME/PASSWORD are used when present, otherwise it
+# falls back to FTP_USERNAME/PASSWORD — the pair that already existed for the
+# old React deploy. Both point at canvassing.org's document root now, so either
+# works, and nobody has to rename a secret to make a deploy run.
 
 on:
   push:
@@ -22,7 +23,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: deploy-wp-staging
+  group: deploy-wp-production
   cancel-in-progress: false
 
 jobs:
@@ -81,27 +82,28 @@ jobs:
           fi
           echo "Stylesheet is ${size} bytes."
 
-      - name: Verify staging credentials are present
+      - name: Verify FTP credentials are present
         env:
           FTP_SERVER: ${{ secrets.FTP_SERVER }}
-          FTP_STAGING_USERNAME: ${{ secrets.FTP_STAGING_USERNAME }}
-          FTP_STAGING_PASSWORD: ${{ secrets.FTP_STAGING_PASSWORD }}
+          FTP_USER: ${{ secrets.FTP_STAGING_USERNAME || secrets.FTP_USERNAME }}
+          FTP_PASS: ${{ secrets.FTP_STAGING_PASSWORD || secrets.FTP_PASSWORD }}
         run: |
           missing=""
           [ -z "$FTP_SERVER" ] && missing="$missing FTP_SERVER"
-          [ -z "$FTP_STAGING_USERNAME" ] && missing="$missing FTP_STAGING_USERNAME"
-          [ -z "$FTP_STAGING_PASSWORD" ] && missing="$missing FTP_STAGING_PASSWORD"
+          [ -z "$FTP_USER" ] && missing="$missing FTP_STAGING_USERNAME-or-FTP_USERNAME"
+          [ -z "$FTP_PASS" ] && missing="$missing FTP_STAGING_PASSWORD-or-FTP_PASSWORD"
           if [ -n "$missing" ]; then
             echo "::error::Missing repository secrets:$missing"
             exit 1
           fi
+          echo "Credentials present."
 
       - name: Deploy the theme over FTPS
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_STAGING_USERNAME }}
-          password: ${{ secrets.FTP_STAGING_PASSWORD }}
+          username: ${{ secrets.FTP_STAGING_USERNAME || secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_STAGING_PASSWORD || secrets.FTP_PASSWORD }}
           protocol: ftps
           port: 21
           local-dir: ./wp-theme/bewell/
