@@ -35,30 +35,40 @@ by side until the cutover.
 
 ## 1. Things only you can do
 
-I cannot create hosting resources or accounts. These are yours:
+Installing WordPress creates an administrator account and sets its password, so
+that step is yours. Everything after it can be automated.
 
-**a. Create the staging subdomain.**
-hPanel → Domains → Subdomains → create `staging.canvassing.org`.
+**a. Add a new WordPress site.**
+hPanel → **Add website** → **WordPress**. Let Hostinger give it the temporary
+`*.hostingersite.com` domain — do **not** point it at canvassing.org yet. Set the
+admin email to your own and choose a fresh password.
 
-**b. Install WordPress on it.**
-hPanel → Website → Auto Installer → WordPress, targeting
-`staging.canvassing.org`. Set the admin account to yourself for now; Eugene's
-account comes later.
+This is deliberately a *new* site rather than an install onto canvassing.org.
+canvassing.org's `public_html` still holds the React build, and Hostinger serves
+`index.html` before `index.php` — installing over the top gives you a site that
+looks unchanged until the old files are cleared, with Eugene's live site public
+and half-migrated in the meantime. Building beside it costs nothing and the
+switch in step 6 is one click.
 
-**c. Create an FTP account scoped to the staging subdomain.**
-hPanel → Files → FTP Accounts. Scope it to the staging directory only, the same
+**b. Create an FTP account scoped to the new site.**
+hPanel → Files → FTP Accounts. Scope it to that site's directory only, the same
 way `u174852759.canvassing.org` is scoped to production. Do not reuse the
-production FTP account and do not use the SSH user `u174852759` — that one
+production FTP account, and do not use the SSH user `u174852759` — that one
 reaches every site on the hosting account.
 
-**d. Add three repository secrets.**
+**c. Add two repository secrets.**
 GitHub → Settings → Secrets and variables → Actions:
 
 | Secret | Value |
 | --- | --- |
 | `FTP_SERVER` | already set — reuse it |
-| `FTP_STAGING_USERNAME` | the FTP user from (c) |
+| `FTP_STAGING_USERNAME` | the FTP user from (b) |
 | `FTP_STAGING_PASSWORD` | its password |
+
+> Other sites already on this hosting account — `bibledoc.org`,
+> `arnoldfamini.com`, and the two `*.hostingersite.com` installs running
+> `weinzoff-theme` and *Adventists Affirm* — are unrelated. Do not point the
+> theme deploy at any of them.
 
 ---
 
@@ -171,20 +181,22 @@ do not put it in the repo or in a GitHub secret.
 
 ## 6. Cutover
 
-Only after you and Eugene have reviewed staging.
+Only after you and Eugene have reviewed the new site.
 
 1. **Disable the React deploy first.** In `.github/workflows/deploy.yml`, remove
    the `push` trigger (leave `workflow_dispatch`). This is the step that will
-   bite you if you skip it: that workflow uploads `dist/` to production's
+   bite you if you skip it: that workflow uploads `dist/` to canvassing.org's
    `public_html` root, so the next merge to `main` would drop a React
-   `index.html` next to WordPress's `index.php` — and most servers serve
+   `index.html` next to WordPress's `index.php` — and Hostinger serves
    `index.html` first. The site would silently revert to the old build.
-2. Take a full backup of production `public_html` and of the staging database.
-3. Move WordPress from the staging subdomain to `canvassing.org` — hPanel's
-   auto-installer clone, or copy the files and database and update `siteurl` and
-   `home`.
-4. Point `FTP_STAGING_*` at production, or rename the secrets, so future theme
-   deploys land on the live site.
+2. Take a full backup: canvassing.org's `public_html`, and the new site's files
+   and database.
+3. **Point the domain across.** hPanel → the new site → **Connect domain** →
+   `canvassing.org`. Hostinger rewrites `siteurl` and `home` for you, so there is
+   no database surgery and no separate migration step.
+4. Clear the leftover React files from the old document root — `index.html` and
+   `assets/` in particular — keeping `images/` if the theme is still serving
+   photographs from there.
 5. Walk the checklist below.
 
 ---
