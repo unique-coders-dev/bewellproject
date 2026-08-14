@@ -26,6 +26,7 @@ $bewell_modules = array(
 	'content',
 	'forms',
 	'admin',
+	'hardening',
 	'migrate',
 );
 
