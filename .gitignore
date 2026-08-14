@@ -23,6 +23,13 @@ dist-ssr
 *.sln
 *.sw?
 
+# Tailwind output for the WordPress theme. Built by `npm run theme:build`,
+# by the deploy workflow, and by `npm run theme:package` — committing it only
+# produces merge conflicts on a generated file. If the site ever renders
+# unstyled, this is the first thing to check: the build did not run.
+wp-theme/bewell/assets/css/theme.css
+bewell-theme.zip
+
 # Local environment variables — never commit real keys
 .env
 .env.local
