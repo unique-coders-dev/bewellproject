@@ -111,12 +111,18 @@ Users → Add New.
 
 | Person | Role | Can |
 | --- | --- | --- |
+| Arnold | Administrator | everything — hosting and development |
 | Eugene | Administrator | everything, including installing plugins |
 | Minhaz | BE WELL Staff | read and triage submissions, edit pages and media |
 | — | — | Staff **cannot** reach Settings, Plugins, Users, Tools or Themes |
 
-Have each of them set their own password through the "Set New Password" email
-rather than you choosing one for them.
+The WordPress installer creates the first administrator, which is yours. Add the
+other two from Users → Add New once you are in.
+
+Set each account's password by sending the "Set New Password" email rather than
+typing one in yourself. WordPress mails a one-time link, the person chooses
+their own password, and it is never written down, pasted into a chat, or stored
+anywhere you would have to clean up later.
 
 > **If you cannot see the Users menu, you are signed in as staff.** It is an
 > Administrator-only screen — standard WordPress, nothing here removed it. Staff
