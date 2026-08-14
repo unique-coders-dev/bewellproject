@@ -118,6 +118,12 @@ Users → Add New.
 Have each of them set their own password through the "Set New Password" email
 rather than you choosing one for them.
 
+> **If you cannot see the Users menu, you are signed in as staff.** It is an
+> Administrator-only screen — standard WordPress, nothing here removed it. Staff
+> get a 403 on `users.php` and `user-new.php` on purpose: a staff login should
+> not be able to create an Administrator account. Sign in as Eugene to add
+> people.
+
 Public registration is off, and stays off: the theme also refuses registration
 at the `registration_errors` filter, so flipping the setting back on by accident
 does not open the door.
