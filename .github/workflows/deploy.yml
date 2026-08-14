@@ -1,8 +1,20 @@
-name: Build and deploy to Hostinger
+name: Build and deploy the React site to Hostinger (manual only)
+
+# The automatic push trigger is deliberately removed.
+#
+# This workflow uploads dist/ to canvassing.org's public_html root. Once
+# WordPress is serving that document root, a merge to main would drop a React
+# index.html next to WordPress's index.php — and Hostinger serves index.html
+# first, so the site would silently revert to the old build with every check
+# still green. Nothing in the logs would say anything was wrong.
+#
+# The React site is still the live one until the domain is pointed at the
+# WordPress install, so this is kept runnable by hand for a hotfix:
+# Actions -> this workflow -> Run workflow.
+#
+# Once canvassing.org is on WordPress, delete this file.
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 concurrency:
