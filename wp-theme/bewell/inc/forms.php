@@ -145,6 +145,52 @@ function bewell_form_schema() {
 }
 
 /**
+ * Keep page caches away from any page that renders a form.
+ *
+ * Every form carries a nonce. For logged-out visitors WordPress issues one
+ * shared nonce that rolls every 12 hours and stops verifying at 24. A full-page
+ * cache will happily serve the same HTML for days — Hostinger ships LiteSpeed
+ * with a long public TTL — so once a cached copy outlives its nonce, every
+ * visitor gets a token that cannot verify and every submission is rejected.
+ * Reloading does not help, because the reload is served from the same cache.
+ * The result is all four forms failing silently for real people while the site
+ * looks perfectly healthy.
+ *
+ * DONOTCACHEPAGE is honoured by LiteSpeed, WP Rocket, W3 Total Cache and WP
+ * Super Cache; the litespeed_control_set_nocache action is the explicit API for
+ * the plugin actually installed here. Both are set so this survives a change of
+ * caching plugin.
+ *
+ * @return void
+ */
+function bewell_prevent_form_page_caching() {
+	if ( ! is_page() ) {
+		return;
+	}
+
+	$has_form = false;
+	foreach ( array( 'contact', 'lifestyle', 'training', 'work' ) as $key ) {
+		if ( bewell_is_current( $key ) ) {
+			$has_form = true;
+			break;
+		}
+	}
+
+	if ( ! $has_form ) {
+		return;
+	}
+
+	if ( ! defined( 'DONOTCACHEPAGE' ) ) {
+		define( 'DONOTCACHEPAGE', true );
+	}
+
+	do_action( 'litespeed_control_set_nocache', 'BE WELL: form nonce must be freshly generated' );
+
+	nocache_headers();
+}
+add_action( 'template_redirect', 'bewell_prevent_form_page_caching', 5 );
+
+/**
  * Handle a submission before any output is sent.
  *
  * @return void
