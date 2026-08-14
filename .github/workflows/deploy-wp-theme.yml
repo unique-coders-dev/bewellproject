@@ -1,0 +1,130 @@
+name: Build and deploy the WordPress theme
+
+# Deploys the theme to canvassing.org, which now runs WordPress.
+#
+# The React build and its deploy.yml were removed at cutover on 2026-08-15. Do
+# not reinstate a workflow that uploads dist/ to the document root: Hostinger
+# serves index.html before index.php, so a React index.html landing beside
+# WordPress's would silently revert the site with every check still green.
+#
+# Credentials: FTP_STAGING_USERNAME/PASSWORD are used when present, otherwise it
+# falls back to FTP_USERNAME/PASSWORD — the pair that already existed for the
+# old React deploy. Both point at canvassing.org's document root now, so either
+# works, and nobody has to rename a secret to make a deploy run.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'wp-theme/**'
+      - '.github/workflows/deploy-wp-theme.yml'
+      - 'package.json'
+      - 'package-lock.json'
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-wp-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      # A parse error in a theme file takes down the whole site with a white
+      # screen, and FTP deploys have no rollback. Cheap insurance.
+      - name: Lint every PHP file
+        run: |
+          fail=0
+          while IFS= read -r file; do
+            if ! php -l "$file" > /dev/null 2>&1; then
+              echo "::error file=$file::PHP syntax error"
+              php -l "$file" || true
+              fail=1
+            fi
+          done < <(find wp-theme -name '*.php')
+          if [ "$fail" -ne 0 ]; then exit 1; fi
+          echo "All PHP files parsed cleanly."
+
+      - name: Build the theme stylesheet
+        run: npm run theme:build
+
+      # An empty or missing stylesheet deploys a site that returns 200 and looks
+      # completely broken, which is easy to miss in a green run.
+      - name: Verify the stylesheet was produced
+        run: |
+          css="wp-theme/bewell/assets/css/theme.css"
+          if [ ! -s "$css" ]; then
+            echo "::error::$css is missing or empty — the Tailwind build produced nothing."
+            exit 1
+          fi
+          size=$(wc -c < "$css")
+          if [ "$size" -lt 10000 ]; then
+            echo "::error::$css is only ${size} bytes; Tailwind almost certainly failed to scan the PHP templates."
+            exit 1
+          fi
+          echo "Stylesheet is ${size} bytes."
+
+      - name: Verify FTP credentials are present
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USER: ${{ secrets.FTP_STAGING_USERNAME || secrets.FTP_USERNAME }}
+          FTP_PASS: ${{ secrets.FTP_STAGING_PASSWORD || secrets.FTP_PASSWORD }}
+        run: |
+          missing=""
+          [ -z "$FTP_SERVER" ] && missing="$missing FTP_SERVER"
+          [ -z "$FTP_USER" ] && missing="$missing FTP_STAGING_USERNAME-or-FTP_USERNAME"
+          [ -z "$FTP_PASS" ] && missing="$missing FTP_STAGING_PASSWORD-or-FTP_PASSWORD"
+          if [ -n "$missing" ]; then
+            echo "::error::Missing repository secrets:$missing"
+            exit 1
+          fi
+          echo "Credentials present."
+
+      - name: Deploy the theme over FTPS
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_STAGING_USERNAME || secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_STAGING_PASSWORD || secrets.FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          local-dir: ./wp-theme/bewell/
+          # The FTP account is chrooted to the site's public_html, so this path
+          # is relative to it and must NOT be prefixed with public_html/.
+          # Getting that wrong produces a nested public_html/public_html/ that
+          # the web server never serves, while the run still goes green.
+          server-dir: ./wp-content/themes/bewell/
+          dangerous-clean-slate: false
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/src/**
+            **/node_modules/**
+            **/.DS_Store
+
+      - name: Summary
+        run: |
+          echo "### WordPress theme deployed to canvassing.org" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Target: \`wp-content/themes/bewell/\` on canvassing.org." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "A green run means the files uploaded — it does not prove the site renders." >> $GITHUB_STEP_SUMMARY
+          echo "Open canvassing.org and check the page actually looks styled." >> $GITHUB_STEP_SUMMARY

@@ -7,7 +7,11 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "typecheck": "tsc --noEmit",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "theme:build": "tailwindcss -i ./wp-theme/bewell/src/tailwind.css -o ./wp-theme/bewell/assets/css/theme.css --minify",
+    "theme:watch": "tailwindcss -i ./wp-theme/bewell/src/tailwind.css -o ./wp-theme/bewell/assets/css/theme.css --watch",
+    "theme:lint": "find wp-theme -name '*.php' -exec php -l {} \\; | grep -v 'No syntax errors' || echo 'All PHP files parsed cleanly.'",
+    "theme:package": "npm run theme:build && rm -f bewell-theme.zip && cd wp-theme && zip -qr ../bewell-theme.zip bewell -x 'bewell/src/*' '*.DS_Store' && cd .. && echo 'Wrote bewell-theme.zip — upload via Appearance > Themes > Add New > Upload Theme.'"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -37,6 +41,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@tailwindcss/cli": "^4.3.3",
     "@types/node": "^24.12.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",

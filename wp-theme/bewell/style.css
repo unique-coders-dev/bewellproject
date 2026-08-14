@@ -1,0 +1,21 @@
+/*
+Theme Name: BE WELL
+Theme URI: https://canvassing.org
+Author: Unique Coders
+Description: Custom theme for BE WELL, a centre of health and healing near Choto Daragar Hat, Bangladesh. Ported 1:1 from the original Vite + React site so the visual design is unchanged.
+Version: 1.0.0
+Requires at least: 6.4
+Tested up to: 6.7
+Requires PHP: 8.0
+License: GPL-2.0-or-later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: bewell
+Tags: custom-theme, health, one-column
+*/
+
+/*
+  This file exists because WordPress identifies a theme by the header above and
+  nothing else. The actual styles are compiled by Tailwind from src/tailwind.css
+  into assets/css/theme.css — do not add rules here, they load in the wrong
+  order and will be overridden.
+*/
